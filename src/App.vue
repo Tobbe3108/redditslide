@@ -31,7 +31,7 @@ export default {
       period: "",
       limit: "",
       after: "",
-      results: ""
+      results: []
     };
   },
   created: function() {
@@ -79,7 +79,7 @@ export default {
   methods: {
     fetchPosts: async function() {
       const res = await axios
-        .get(this.generateURL)
+        .get("https://cors-anywhere.herokuapp.com/" + this.generateURL)
         .then(res => (res = res.data.data.children));
       let data = res.map(posts => posts.data);
       data = data.filter(
@@ -88,7 +88,7 @@ export default {
         //it.domain == "imgur.com" ||
         //it.domain == "www.youtube.com"
       );
-      this.results = data;
+      this.results = [...this.results, ...data];
     },
     nextPage: function(after) {
       this.after = after;

@@ -19,8 +19,32 @@
     <a :href="URL">Go to subreddit</a>
 
     <div v-if="results">
-      <img v-for="post in results" :key="post.name" :src="post.url" :alt="post.name" />
+      <div v-for="post in results" :key="post.name">
+        <div v-if="post.url.includes('gifv')">
+          <video
+            preload="auto"
+            autoplay="autoplay"
+            loop="loop"
+            style="max-width: 90%; height: auto;"
+            crossorigin="anonymous"
+          >
+            <source
+              :src="'https://cors-anywhere.herokuapp.com/' + post.url.slice(0,-4) + 'mp4'"
+              type="video/mp4"
+            />
+          </video>
+        </div>
+        <div v-else>
+          <img
+            :src="'https://cors-anywhere.herokuapp.com/' + post.url"
+            :alt="post.name"
+            crossorigin="anonymous"
+            style="max-width: 90%; height: auto;"
+          />
+        </div>
+      </div>
     </div>
+
     <button @click="$emit('nextPage', results[results.length - 1].name)">Next</button>
   </div>
 </template>
