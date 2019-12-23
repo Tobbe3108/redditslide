@@ -16,6 +16,8 @@
       <option value="year">Year</option>
       <option value="all">All</option>
     </select>
+
+    <input type="checkbox" v-model="nsfw" />
     <a :href="URL">Go to subreddit</a>
 
     <div v-if="results">
@@ -54,7 +56,7 @@ import { isNullOrUndefined } from "util";
 
 export default {
   name: "RedditSlide",
-  props: ["subreddit", "sort", "period", "limit", "after", "results"],
+  props: ["subreddit", "sort", "period", "limit", "after", "nsfw", "results"],
   computed: {
     URL: function() {
       let url = "http://localhost:8080/r";
@@ -70,6 +72,8 @@ export default {
       if (!isNullOrUndefined(this.period)) {
         url += `&t=${this.period}`;
       }
+
+      url += this.nsfw ? "&nsfw=true" : "&nsfw=false";
 
       return url;
     }

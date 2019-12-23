@@ -6,6 +6,7 @@
       :period="period"
       :limit="limit"
       :after="after"
+      :nsfw="nsfw"
       :results="results"
       @nextPage="nextPage"
     />
@@ -31,10 +32,11 @@ export default {
       period: "",
       limit: "",
       after: "",
+      nsfw: true,
       results: []
     };
   },
-  created: function() {
+  mounted: function() {
     this.url = window.location;
     this.urlObject = new URL(this.url);
     this.subreddit = this.urlObject.pathname.split("/")[2];
@@ -45,6 +47,7 @@ export default {
     this.period = this.urlObject.searchParams.get("t");
     this.limit = this.urlObject.searchParams.get("limit");
     this.after = this.urlObject.searchParams.get("after");
+    this.nsfw = this.urlObject.searchParams.get("nsfw");
     this.fetchPosts();
   },
   computed: {
@@ -83,11 +86,14 @@ export default {
         .then(res => (res = res.data.data.children));
       let data = res.map(posts => posts.data);
       data = data.filter(
-        it => it.domain == "i.imgur.com" || it.domain == "i.redd.it" //||
+        post => post.domain == "i.imgur.com" || post.domain == "i.redd.it" //||
         //it.domain == "youtu.be" ||
         //it.domain == "imgur.com" ||
         //it.domain == "www.youtube.com"
       );
+      if (!this.nsfw) {
+        data = data.filter(post => post.over_18 == "false");
+      }
       this.results = [...this.results, ...data];
     },
     nextPage: function(after) {
